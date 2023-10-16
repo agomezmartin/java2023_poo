@@ -33,6 +33,15 @@ class GuardaFichero implements Consumer<Integer>{
 	}	
 }
 
+class CriterioLongitud implements Predicate<String>{
+
+	@Override
+	public boolean test(String t) {
+		return t.length()>5;
+	}
+	
+}
+
 public class OperaNumeros {
 
 	public static void main(String[] args) {
@@ -47,6 +56,12 @@ public class OperaNumeros {
 		
 		//guardar un fichero (de direccion cualquiera) los negativos
 		service.procesaColeccionPorCriterio(numeros, new CriterioNegativos(), new GuardaFichero());
+		
+		
+		
+		List<String> nombres=List.of("pan","cadenalarga","vino","bicicleta");
+		List<String> res=service.obtenerCadenasCriterio(nombres, new CriterioLongitud());
+		System.out.println(res);
 	}
 
 }
