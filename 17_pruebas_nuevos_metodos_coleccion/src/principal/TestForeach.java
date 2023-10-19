@@ -12,7 +12,8 @@ public class TestForeach {
 			System.out.println(n);
 		}
 		
-		numeros.forEach(n->System.out.println(n));
+		//numeros.forEach(n->System.out.println(n));
+		numeros.forEach(System.out::println);
 		
 		///////////////////
 		Map<Integer, String> dias=new HashMap<>();
@@ -20,6 +21,7 @@ public class TestForeach {
 		dias.put(300, "martes");
 		dias.put(400, "miércoles");
 		dias.put(200, "jueves");
+		dias.forEach((k,v)->System.out.println(k+":"+v));
 		dias.forEach((k,v)->System.out.println(k+":"+v));
 	}
 

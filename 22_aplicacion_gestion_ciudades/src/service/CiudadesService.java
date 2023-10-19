@@ -2,6 +2,7 @@ package service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import model.Ciudad;
 
@@ -74,5 +75,19 @@ public class CiudadesService {
 				.orElse(0);
 	}
 	
+	//A partir de un pais devuelve la lista de ciudades de dicho pais
+	public List<Ciudad> ciudadesPais(String pais){
+		return ciudades.stream()
+				.filter(c->c.getPais().equals(pais)) //Stream<Ciudad>
+				.collect(Collectors.toList());
+	}
+	//devuelve una lista con los nombres de los paises
+	public List<String> nombresPaises(){
+		return ciudades.stream() //Stream<Ciudad>
+				.map(c->c.getPais()) //Stream<String>
+				.distinct()
+				.collect(Collectors.toList());
+				
+	}
 	
 }
