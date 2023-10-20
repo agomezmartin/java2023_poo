@@ -16,7 +16,8 @@ public class TestSort {
 		numeros.forEach(n->System.out.println(n));
 		
 		List<String> cadenas=new ArrayList<>(List.of("Marcos","Lucas","Laura","Angela","Elena"));
-		cadenas.sort((a,b)->a.compareTo(b));
+		//cadenas.sort((a,b)->a.compareTo(b));
+		cadenas.sort(String::compareTo);
 		cadenas.forEach(n->System.out.println(n));
 	}
 

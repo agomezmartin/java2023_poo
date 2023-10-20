@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.List;
 
 public class Test5FindFirst {
@@ -12,7 +13,12 @@ public class Test5FindFirst {
 		String nombres="leche,atún,vino,patatas,leche,agua,vino,lechuga";
 		//nombre del primer producto que comience por "a", si no hay ninguno
 		//que muestre "no hay ninguno"
-		
+		System.out.println(
+				Arrays.stream(nombres.split(","))
+				.filter(s->s.toLowerCase().startsWith("b"))
+				.findFirst()
+				.orElse("no hay ninguno")
+				);
 	}
 
 }
