@@ -2,6 +2,7 @@ package service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import model.Ciudad;
@@ -62,9 +63,10 @@ public class CiudadesService {
 	public double mediaHabitantesPorPais(String pais) {
 		return ciudades.stream()
 				.filter(c->c.getPais().equals(pais))//Stream<Ciudad>
-				.mapToLong(c->c.getHabitantes()) //LongStream
+				/*.mapToLong(c->c.getHabitantes()) //LongStream
 				.average()
-				.orElse(0);
+				.orElse(0);*/
+				.collect(Collectors.averagingDouble(c->c.getHabitantes()));
 	}
 	
 	//temperatura media más alta de entre todas las ciudades
@@ -73,6 +75,7 @@ public class CiudadesService {
 				.mapToDouble(c->c.getTemperaturaMedia())
 				.max()
 				.orElse(0);
+				
 	}
 	
 	//A partir de un pais devuelve la lista de ciudades de dicho pais
@@ -90,4 +93,19 @@ public class CiudadesService {
 				
 	}
 	
+	
+	//método que devuelva una tabla con las ciudades agrupadas por pais
+	public Map<String,List<Ciudad>> ciudadesPorPais(){
+		return ciudades.stream()
+				.collect(Collectors.groupingBy(c->c.getPais()));
+	}
+	
+	
+	//método que, a partir de una temperatura, devuelva una tabla con dos listas de ciudades
+	//por un lado, las que tienen una temperatura media superior a ese valor, y por otro 
+	//las que tienen temperatura inferior.
+	public Map<Boolean,List<Ciudad>> ciudadesPorTemperatura(double temp){
+		return ciudades.stream()
+				.collect(Collectors.partitioningBy(c->c.getTemperaturaMedia()>=temp));
+	}
 }
