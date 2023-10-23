@@ -3,7 +3,7 @@ package view;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import model.Pedido;
@@ -85,7 +85,7 @@ public class PedidosMain {
 		Scanner sc=new Scanner(System.in);
 		System.out.println("Introduce precio máximo");
 		double precioMax=Double.parseDouble(sc.nextLine());
-		ArrayList<Pedido> pedidos=pedidosService.pedidosPrecio(precioMax);
+		List<Pedido> pedidos=pedidosService.pedidosPrecio(precioMax);
 		for(Pedido p:pedidos) {
 			System.out.println("Producto: "+p.getProducto());
 			System.out.println("Fecha: "+p.getFechaPedido());
@@ -97,7 +97,7 @@ public class PedidosMain {
 		Scanner sc=new Scanner(System.in);
 		System.out.println("Introduce meses");
 		int meses=Integer.parseInt(sc.nextLine());
-		ArrayList<Pedido> pedidos=pedidosService.anteriores(meses);
+		List<Pedido> pedidos=pedidosService.anteriores(meses);
 		for(Pedido p:pedidos) {
 			System.out.println("Producto: "+p.getProducto());
 			System.out.println("Fecha: "+p.getFechaPedido());

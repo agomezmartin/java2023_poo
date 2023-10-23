@@ -2,14 +2,15 @@ package service;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import model.Pedido;
 
@@ -30,13 +31,23 @@ public class PedidosService {
 		}
 		path=Path.of(dir);
 	}
-	
+	private Stream<Pedido> getPedidos(){
+		try {
+			return Files.lines(path) //Stream<String>
+					.map(s->new Pedido(s.split("[,-]")[0],
+										LocalDate.parse(s.split(",")[1]),
+										Double.parseDouble(s.split(",")[2]))); //Stream<Pedido>
+		}
+		catch(IOException ex) {
+			ex.printStackTrace();
+			return Stream.empty(); //devuelve Steram vacío si hay excepción
+		}
+	}
 	
 	public void guardarPedido(String producto, LocalDate fechaPedido,double precio) {
 		String linea=producto+","+fechaPedido+","+precio;
-		try(FileOutputStream  fos=new FileOutputStream(dir, true);
-				PrintStream	out=new PrintStream(fos)) {			
-			out.println(linea);
+		try{			
+			Files.writeString(path, linea+System.lineSeparator(), StandardOpenOption.APPEND);
 		}
 		catch(IOException ex) {
 			ex.printStackTrace();
@@ -44,78 +55,20 @@ public class PedidosService {
 	}
 	
 	public Pedido pedidoMasReciente() {
-		Pedido pedidoReciente=null;
-		try (
-				FileReader f=new FileReader(dir);
-				BufferedReader bf=new BufferedReader(f);){
-				String linea=bf.readLine();
-				//si el fichero está vacío salimos
-				if(linea==null) {
-					return null;
-				}
-				String[] datos=linea.split(",");
-				//variable que va a contener los datos del pedido más reciente
-				pedidoReciente=new Pedido(datos[0],LocalDate.parse(datos[1]),Double.parseDouble(datos[2]));
-				LocalDate fechaReciente=pedidoReciente.getFechaPedido();
-				
-				while((linea=bf.readLine())!=null) {
-					datos=linea.split(",");
-					Pedido p=new Pedido(datos[0],LocalDate.parse(datos[1]),Double.parseDouble(datos[2]));
-					if(p.getFechaPedido().isAfter(fechaReciente)) { //si encontramos una fecha más reciente, actualizamos variables
-						fechaReciente=p.getFechaPedido();
-						pedidoReciente=p;
-					}					
-				}
-			}
-			catch(IOException ex) {
-				ex.printStackTrace();
-			}		
-			return pedidoReciente;	
+		return getPedidos() //Stream<Pedido>
+			.max((a,b)->a.getFechaPedido().compareTo(b.getFechaPedido())) //Stream<Pedido>
+			.orElse(null);		
 	}
 	
 	public 	List<Pedido> pedidosPrecio(double precioMax) {
-		ArrayList<Pedido> resultado=new ArrayList<Pedido>();
-		try (
-				FileReader f=new FileReader(dir);
-				BufferedReader bf=new BufferedReader(f);){
-				String linea;
-				while((linea=bf.readLine())!=null) {
-					String[] datos=linea.split(",");
-					Pedido p=new Pedido(datos[0],LocalDate.parse(datos[1]),Double.parseDouble(datos[2]));
-					if(p.getPrecio()<precioMax) {
-						resultado.add(p);
-					}
-					
-				}
-
-			}
-			catch(IOException ex) {
-				ex.printStackTrace();
-			}
-		
-		return resultado;
-	}
-	
-	public List<Pedido> anteriores(int meses){
-		ArrayList<Pedido> resultado=new ArrayList<>();
+			return getPedidos()
+						.filter(p->p.getPrecio()<=precioMax)//Stream<Pedido>
+						.toList();		
+	}	
+	public List<Pedido> anteriores(int meses){		
 		LocalDate referencia=LocalDate.now().minusMonths(meses);
-		try (
-				FileReader f=new FileReader(dir);
-				BufferedReader bf=new BufferedReader(f);){
-				String linea;
-				while((linea=bf.readLine())!=null) {
-					String[] datos=linea.split(",");
-					Pedido p=new Pedido(datos[0],LocalDate.parse(datos[1]),Double.parseDouble(datos[2]));
-					if(p.getFechaPedido().isBefore(referencia)) {
-						resultado.add(p);
-					}
-				}
-
-			}
-			catch(IOException ex) {
-				ex.printStackTrace();
-			}
-		
-		return resultado;
+		return getPedidos()
+					.filter(p->p.getFechaPedido().isBefore(referencia))
+					.toList();		
 	}
 }
