@@ -1,19 +1,17 @@
 package model;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
-public class Pedido {
-	private String producto;
-	private LocalDate fechaPedido;
-	private double precio;
-	
+public class Empleado {
+	private String nombre;
+	private String email;
+	private double salario;
+	private String departamento;
 }

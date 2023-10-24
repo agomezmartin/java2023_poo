@@ -56,7 +56,7 @@ public class PedidosService {
 	
 	public Pedido pedidoMasReciente() {
 		return getPedidos() //Stream<Pedido>
-			.max((a,b)->a.getFechaPedido().compareTo(b.getFechaPedido())) //Stream<Pedido>
+			.max((a,b)->a.getFechaPedido().compareTo(b.getFechaPedido())) //Optional<Pedido>
 			.orElse(null);		
 	}
 	
