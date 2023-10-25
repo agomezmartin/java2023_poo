@@ -46,5 +46,13 @@ class TestCiudadesService {
 	void testTemperaturaMax() {
 		assertEquals(23.5, service.temperaturaMasAlta());
 	}
+	
+	@Test
+	void testAgrupamiento() {
+		service.nuevaCiudad("c6", "p3", 140_000, 15.6);
+		assertEquals(3, service.ciudadesPorPais().get("p2").size());
+		assertEquals(2, service.ciudadesPorPais().get("p1").size());
+		assertEquals(1, service.ciudadesPorPais().get("p3").size());
+	}
 
 }

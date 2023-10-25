@@ -25,6 +25,25 @@ public class Test12CollectColecciones {
 		//Generar una tabla, donde el código es la clave y el nombre el valor
 		Map<String,String> emps=empleados.stream()//Stream<String>
 							.collect(Collectors.toMap(s->s.split("-")[0], s->s.split("-")[1]));
+		
+		
+		List<String> empleados2=List.of("ventas-Angel","administración-Ana","ventas-Esteban",
+				"ventas-Javier",
+				"informática-Laura",
+				"administración-Lucas");
+				
+		Map<String,List<String>> division=empleados2.stream()
+				.collect(Collectors.groupingBy(s->s.split("-")[0]));
+		//division.forEach((k,v)->System.out.println(k+":"+v));
+		division.forEach((k,v)->{
+			System.out.print(k+": ");
+			v.forEach(n->System.out.println(n.split("-")[1]));
+		});
+		
+		//a partir de la lista de números, generar un map con dos listas, negativos por un lado, positivos por otro
+		Map<Boolean,List<Integer>> numeros=nums.stream()
+										.collect(Collectors.partitioningBy(n->n>0));
+		System.out.println(numeros);
 	}
 
 }
